@@ -1,4 +1,4 @@
-package com.xuegao.rocketmqclient;
+package com.xuegao.rocketmqproduct;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
