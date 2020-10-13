@@ -23,34 +23,29 @@ import java.util.concurrent.TimeUnit;
  * <br/> @date：2020/10/11 11:29
  */
 @SpringBootTest
-public class producer1 {
+public class SyncProducer1 {
 
     @Test
     public void send1() throws UnsupportedEncodingException, InterruptedException, RemotingException, MQClientException, MQBrokerException {
-        DefaultMQProducer producer = new DefaultMQProducer();
+        DefaultMQProducer producer = new DefaultMQProducer("please_rename_unique_group_name");
         // 生产者的组名
-        producer.setProducerGroup("xuegaoProduct");
+        // producer.setProducerGroup("please_rename_unique_group_name");
         // please_rename_unique_group_name
         // 指定NameServer地址，多个地址以 ; 隔开
-        producer.setNamesrvAddr("192.168.200.131:9876");
-        producer.setVipChannelEnabled(false);
-
-        try {
-            producer.start();
-        } catch (MQClientException e) {
-            e.printStackTrace();
-        }
+        producer.setNamesrvAddr("192.168.42.131:9876");
+        // producer.setVipChannelEnabled(false);
+        producer.start();
 
         for (int i = 0; i < 10; i++) {
             Message message = new Message();
             message.setTopic("TopicTest");
             message.setTags("TagA");
-            message.setBody(("Hello RocketMQ " + i).getBytes(RemotingHelper.DEFAULT_CHARSET));
+            message.setBody(("Hello RocketMQ 2020年10月12日17:07:41 " + i).getBytes(RemotingHelper.DEFAULT_CHARSET));
 
             SendResult sendResult = producer.send(message);
             System.out.printf("%s%n", sendResult);
 
-            TimeUnit.SECONDS.sleep(1);
+            // TimeUnit.SECONDS.sleep(1);
         }
         producer.shutdown();
     }

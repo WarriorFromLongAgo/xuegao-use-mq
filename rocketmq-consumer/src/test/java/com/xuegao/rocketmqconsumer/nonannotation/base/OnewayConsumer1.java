@@ -1,4 +1,4 @@
-package com.xuegao.rocketmqconsumer.nonannotation;
+package com.xuegao.rocketmqconsumer.nonannotation.base;
 
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
@@ -7,17 +7,26 @@ import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.message.MessageExt;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 
-public class Consumer {
-
+/**
+ * <br/> @PackageName：com.xuegao.rocketmqconsumer.nonannotation.base
+ * <br/> @ClassName：OfficialConsumer
+ * <br/> @Description：
+ * <br/> @author：xuegao
+ * <br/> @date：2020/10/12 16:56
+ */
+public class OnewayConsumer1 {
     public static void main(String[] args) throws InterruptedException, MQClientException {
 
         // Instantiate with specified consumer group name.
         DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("please_rename_unique_group_name");
 
         // Specify name server addresses.
-        consumer.setNamesrvAddr("localhost:9876");
+        consumer.setNamesrvAddr("192.168.42.131:9876");
 
         // Subscribe one more more topics to consume.
         consumer.subscribe("TopicTest", "*");
@@ -26,7 +35,13 @@ public class Consumer {
 
             @Override
             public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
-                System.out.printf("%s Receive New Messages: %s %n", Thread.currentThread().getName(), msgs);
+                for (MessageExt msg : msgs) {
+                    System.out.println("======================================");
+                    System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm")));
+                    System.out.println(Arrays.toString(msg.getBody()));
+                    System.out.println(msg.getBodyCRC());
+                    System.out.println("======================================");
+                }
                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }
         });
