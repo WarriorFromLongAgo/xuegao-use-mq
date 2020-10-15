@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * <br/> @author：xuegao
  * <br/> @date：2020/10/12 19:55
  */
-public class BatchProducer1 {
+public class BatchProducer2 {
     // 批量发送消息可提高传递小消息的性能
     // 此外，一批消息的总大小不得超过1MiB。
     // 如果您一次只发送不超过1MiB的消息，则可以轻松使用批处理
@@ -43,8 +43,12 @@ public class BatchProducer1 {
             messageList.add(message);
         }
 
-        SendResult send = producer.send(messageList);
-        System.out.println("SendResult = " + send);
+        ListSplitter listSplitter = new ListSplitter(messageList);
+        while (listSplitter.hasNext()){
+            List<Message> next = listSplitter.next();
+            SendResult send = producer.send(next);
+            System.out.println("SendResult = " + send);
+        }
 
         TimeUnit.SECONDS.sleep(1);
 
