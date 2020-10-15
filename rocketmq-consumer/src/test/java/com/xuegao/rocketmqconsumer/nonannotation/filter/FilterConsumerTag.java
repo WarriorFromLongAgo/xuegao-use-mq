@@ -17,7 +17,7 @@ import java.util.List;
  * <br/> @author：xuegao
  * <br/> @date：2020/10/12 20:04
  */
-public class FilterConsumer1 {
+public class FilterConsumerTag {
     public static void main(String[] args) throws MQClientException {
         DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("please_rename_unique_group_name_4");
         consumer.setNamesrvAddr("192.168.42.131:9876");
@@ -26,11 +26,17 @@ public class FilterConsumer1 {
 
         // consumer.subscribe("TopicTestFilter", MessageSelector.bySql("a between 0 and 2"));
 
-        consumer.subscribe("TopicTestFilter", "com.xuegao.rocketmqconsumer.nonannotation.filter.MessageFilterImpl");
+        consumer.subscribe("TopicTestFilter", "TagA || TagB");
 
         consumer.registerMessageListener(new MessageListenerConcurrently() {
             @Override
-            public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
+            public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> messageExtList, ConsumeConcurrentlyContext context) {
+                for (MessageExt messageExt : messageExtList) {
+                    System.out.println("========================================================");
+                    System.out.println(messageExt);
+                    System.out.println(new String(messageExt.getBody()));
+                    System.out.println("========================================================");
+                }
                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }
         });

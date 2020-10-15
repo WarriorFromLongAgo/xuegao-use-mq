@@ -33,7 +33,6 @@ public class AsyncProducer1 {
                 final int index = i;
                 Message msg = new Message("Jodie_topic_1023",
                         "TagA",
-                        "OrderID188",
                         "Hello world".getBytes(RemotingHelper.DEFAULT_CHARSET));
                 producer.send(msg, new SendCallback() {
                     @Override
