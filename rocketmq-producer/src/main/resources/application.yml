@@ -1,11 +1,4 @@
-server:
-  port: 10000
-
-apache:
-  rocketmq:
-    consumer:
-      consumerGroup: xuegaoConsumer
-    producer:
-      producerGroup: xuegaoProduct
-    namesrvAddr: 192.168.200.131:9876
-
+rocketmq:
+  name-server: 192.168.42.131:9876
+  producer:
+    group: springboot-producer-group
