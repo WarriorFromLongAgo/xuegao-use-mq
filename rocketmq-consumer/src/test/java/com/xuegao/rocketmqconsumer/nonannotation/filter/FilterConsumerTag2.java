@@ -17,7 +17,7 @@ import java.util.List;
  * <br/> @author：xuegao
  * <br/> @date：2020/10/12 20:04
  */
-public class FilterConsumerTag {
+public class FilterConsumerTag2 {
     public static void main(String[] args) throws MQClientException {
         DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("please_rename_unique_group_name_4");
         consumer.setNamesrvAddr("192.168.42.131:9876");
@@ -27,7 +27,7 @@ public class FilterConsumerTag {
         // consumer.subscribe("TopicTestFilter", MessageSelector.bySql("a between 0 and 2"));
 
         consumer.subscribe("TopicTestFilter", "TagA || TagB");
-        // consumer.subscribe("TopicTestFilter", "*");
+        // consumer.subscribe("TopicTestFilter", "TagA");
 
         consumer.registerMessageListener(new MessageListenerConcurrently() {
             @Override

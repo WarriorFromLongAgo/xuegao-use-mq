@@ -1,4 +1,4 @@
-package com.xuegao.rocketmqconsumer.nonannotation.filter;
+package com.xuegao.rocketmqconsumer.nonannotation.transaction;
 
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
@@ -11,37 +11,31 @@ import org.apache.rocketmq.common.message.MessageExt;
 import java.util.List;
 
 /**
- * <br/> @PackageName：com.xuegao.rocketmqconsumer.nonannotation.filter
- * <br/> @ClassName：FilterConsumer1
+ * <br/> @PackageName：com.xuegao.rocketmqconsumer.nonannotation.transaction
+ * <br/> @ClassName：TransactionBiliConsumer
  * <br/> @Description：
  * <br/> @author：xuegao
- * <br/> @date：2020/10/12 20:04
+ * <br/> @date：2020/10/18 17:04
  */
-public class FilterConsumerTag {
+public class TransactionBiliConsumer {
     public static void main(String[] args) throws MQClientException {
-        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("please_rename_unique_group_name_4");
+        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("transaction_consumer");
         consumer.setNamesrvAddr("192.168.42.131:9876");
         consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
-        // only subsribe messages have property a, also a >=0 and a <= 3
-
-        // consumer.subscribe("TopicTestFilter", MessageSelector.bySql("a between 0 and 2"));
-
-        consumer.subscribe("TopicTestFilter", "TagA || TagB");
-        // consumer.subscribe("TopicTestFilter", "*");
+        consumer.subscribe("transactionTopic", "*");
 
         consumer.registerMessageListener(new MessageListenerConcurrently() {
             @Override
             public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> messageExtList, ConsumeConcurrentlyContext context) {
                 for (MessageExt messageExt : messageExtList) {
-                    System.out.println("========================================================");
-                    System.out.println(messageExt);
-                    System.out.println(new String(messageExt.getBody()));
-                    System.out.println("========================================================");
+                    System.out.println("===================================");
+                    System.out.println(Thread.currentThread().getName() + "===" + new String(messageExt.getBody()));
+                    System.out.println("===================================");
                 }
                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }
         });
         consumer.start();
-        System.out.println("consumer");
+        System.out.println("consumer 启动");
     }
 }

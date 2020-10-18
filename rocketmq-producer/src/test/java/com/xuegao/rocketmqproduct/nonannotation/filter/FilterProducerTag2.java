@@ -12,7 +12,6 @@ import org.apache.rocketmq.remoting.exception.RemotingException;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * <br/> @PackageName：com.xuegao.rocketmqproduct.nonannotation.filter
@@ -21,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * <br/> @author：xuegao
  * <br/> @date：2020/10/12 20:01
  */
-public class FilterProducerTag {
+public class FilterProducerTag2 {
     public static void main(String[] args) throws MQClientException, UnsupportedEncodingException, RemotingException, InterruptedException, MQBrokerException {
         DefaultMQProducer producer = new DefaultMQProducer("please_rename_unique_group_name");
         producer.setNamesrvAddr("192.168.42.131:9876");
@@ -29,22 +28,29 @@ public class FilterProducerTag {
 
         String[] stringArr = {"TagA", "TagB", "TagC"};
         for (int i = 0; i < 6; i++) {
+            int orderId = i % 2;
             Message message = new Message();
             message.setTopic("TopicTestFilter");
-            // message.setTags(stringArr[i % stringArr.length]);
-            message.setTags("TagA");
+            // message.setTags("TagA");
+            message.setTags(stringArr[i % stringArr.length]);
             message.setKeys("KEY" + i);
             message.setBody(("Hello RocketMQ " + i).getBytes(RemotingHelper.DEFAULT_CHARSET));
-
-            // Set some properties.
-            SendResult sendResult = producer.send(message);
-            System.out.println("=========================================");
-            System.out.println(sendResult);
+            System.out.println("======================================================");
             System.out.println(message);
-            System.out.println("=========================================");
-
-            // 加了延迟一秒，就都好了，不存在过滤消息的问题
-            TimeUnit.SECONDS.sleep(1);
+            SendResult sendResult = producer.send(message, new MessageQueueSelector() {
+                @Override
+                public MessageQueue select(List<MessageQueue> messageQueueList, Message msg, Object arg) {
+                    System.out.println(messageQueueList);
+                    Integer id = (Integer) arg;
+                    int index = id % messageQueueList.size();
+                    MessageQueue messageQueue = messageQueueList.get(index);
+                    System.out.println(index);
+                    System.out.println(messageQueue);
+                    return messageQueue;
+                }
+            }, orderId);
+            System.out.println("sendResult = " + sendResult);
+            System.out.println("======================================================");
         }
         producer.shutdown();
     }

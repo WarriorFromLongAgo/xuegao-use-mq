@@ -51,8 +51,7 @@ public class AsyncConsumer1 {
                 for (MessageExt msg : msgs) {
                     System.out.println("======================================");
                     System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm")));
-                    System.out.println(Arrays.toString(msg.getBody()));
-                    System.out.println(msg.getBodyCRC());
+                    System.out.println(new String(msg.getBody()));
                     System.out.println("======================================");
                 }
                 // 消费成功
